@@ -1,7 +1,8 @@
 #include "buildFunctions.h"
 
+
 const std::string connString() {
-		return "host=localhost port=5432 dbname=TreeManagement user=postgres password=password";
+	return "host=localhost port=5432 dbname=TreeManagement user=postgres password=password";
 }
 
 
@@ -231,6 +232,7 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	if (fileIn.is_open()) 
 		while (!fileIn.eof())
 			ss << fileIn.get();
+	fileIn.close();
 	
 	// if nothing was extracted from the file, delete it from the filesystem so that no folder turd is left 
 	if ((ss.str()).empty()) { 

@@ -1,9 +1,6 @@
 #include "commandloop.h"
 
-
-
 using namespace std;
-
 
 
 // helper func to clear out the buffer
@@ -38,33 +35,26 @@ int commandLoop() {
 
 		if (userInput.substr(0, 4) == "read" && userInput.length() > 4) { // flags were given with read
 
-			if (userInput.substr(5, 7) == "-n") {
+			if (userInput.substr(5, 7) == "-n") 
 				printResults(buildReadName(connObj));
-			}
 
-			else if (userInput.substr(5, 7) == "-N") {
+			else if (userInput.substr(5, 7) == "-N") 
 				printResults(buildReadNameReversed(connObj));
-			}
 
-			else if (userInput.substr(5, 7) == "-c") {
+			else if (userInput.substr(5, 7) == "-c") 
 				printResults(buildReadCost(connObj));
-			}
 
-			else if (userInput.substr(5, 7) == "-C") {
+			else if (userInput.substr(5, 7) == "-C") 
 				printResults(buildReadCostReversed(connObj));
-			}
 
-			else if (userInput.substr(5, 7) == "-q") {
+			else if (userInput.substr(5, 7) == "-q") 
 				printResults(buildReadQuantity(connObj));
-			}
 
-			else if (userInput.substr(5, 7) == "-Q") {
+			else if (userInput.substr(5, 7) == "-Q") 
 				printResults(buildReadQuantityReversed(connObj));
-			}
 
-			else {
+			else 
 				cerr << "ERROR: Flag of " << userInput << " is not an option, enter \"help\" as a command for options" << endl; 
-			}
 
 			cout << "\nPress enter to continue...";
 			cleanBuffer();
@@ -91,6 +81,20 @@ int commandLoop() {
 			for (;;) {
 				cout << endl << left << setw(colwidth) << "Name: "; getline(cin, tree_name);
 
+				// check that the contents are all alphanumeric 
+				bool alphaFlag = true;
+				for (const auto c : tree_name) {
+					if (!isalnum(c)) {
+						alphaFlag = false;
+						break;
+					}
+				}
+
+				if (!alphaFlag) {
+					cerr << endl << "ERROR: Input failed Name must be alphanumeric (letters/numbers)!\n";
+					continue;
+				}
+
 				if (tree_name == "") {
 					cerr << endl << "ERROR: Tree name cannot be empty!";
 					continue;
@@ -108,6 +112,20 @@ int commandLoop() {
 			for (;;) {
 				cout << endl << left << setw(colwidth) << "Cost: "; cin >> tree_cost;
 
+				// check that the contents are all digits 
+				bool digitFlag = true;
+				for (const auto c : tree_name) {
+					if (!isdigit(c) && c != '.') {		// allow for periods for decimal costs
+						digitFlag = false;
+						break;
+					}
+				}
+
+				if (!digitFlag) {
+					cerr << "ERROR: Cost must be a a valid numerical amount!\n";
+					continue;
+				}
+
 				if (tree_cost <= 0.0 || tree_cost > 100000) {
 					cerr << endl << "ERROR: Tree cost must be between 0 and 100000!";
 					continue;
@@ -118,6 +136,20 @@ int commandLoop() {
 
 			for (;;) {
 				cout << endl << left << setw(colwidth) << "Quantity: "; cin >> quantity;
+
+				// check that the contents are all digits 
+				bool digitFlag = true;
+				for (const auto c : tree_name) {
+					if (!isdigit(c)) {
+						digitFlag = false;
+						break;
+					}
+				}
+
+				if (!digitFlag) {
+					cerr << "ERROR: Cost must be a a valid numerical amount!\n";
+					continue;
+				}
 
 				if (quantity <= 0 || quantity > 10000) {
 					cerr << endl << "ERROR: Tree quantity must be between 0 and 10000!";
@@ -341,7 +373,7 @@ int commandLoop() {
 						break;
 					}
 					else {
-						cerr << "\nUPDATE RECORD TERMINATED\n";
+						cerr << "\n+++ UPDATE RECORD TERMINATED +++\n";
 						break;
 					}
 				}
@@ -362,7 +394,7 @@ int commandLoop() {
 			// extract tree id from user input string 
 			userInput.erase(userInput.begin(), userInput.begin() + 7); // trim delete chars off
 
-			for (const auto c : userInput) {
+			for (const auto& c : userInput) {
 				if (!isdigit(c)) {	// see if we encounter something that isn't a digit
 					cerr << "Input failed, usage is delete tree_id. Use Read command to obtain tree_id" << endl;
 					break;
@@ -389,7 +421,7 @@ int commandLoop() {
 						break;
 					}
 					else {
-						cerr << "\nDELETE RECORD TERMINATED\n";
+						cerr << "\n+++ DELETE RECORD TERMINATED +++\n";
 						break;
 					}
 				}
