@@ -1,0 +1,16 @@
+
++++ REPORT STATUS +++
+
+Generated at: 2022-06-06 19:23:10.180983-04
+Average cost: 490
+
+Total quantity of inventory: 5
+
+Total value of inventory: 2450
+
+Most expensive product: 
+	ID: 4
+	Name: Willow
+	Cost: 1000
+
+Percentage of trees that require machines: 66.67%

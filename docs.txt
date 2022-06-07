@@ -1,0 +1,30 @@
+This program will link a PGSQL database to a C++ program
+-Basic concept is a business that needs to store information on their inventory of trees
+-Full CRUD functionality 
+-For first iteration, only one table will be used 
+
++++ Commands +++
+read (r)	tablename	
+	-a show all records
+	-n exact name (no spaces)
+
+create (c) 
+	-inserts a new record into table 
+		-c pine 50.00 3 no
+		(check for already existing rows with that name)
+
+update (u)
+	-updates by id number (update 10)
+			prompt user column names to update (leaving blank doesn't change)
+				Name?
+				Cost?
+				Quantity?
+				Machine? 
+	-++ adds a tree (update 12 ++) .. +5 (updates 5 more trees )
+	--- subtracts a tree (update 12 --) .. -5 (removes 5 trees from id)
+
+
+delete (d) 
+	-deletes by id number (delete 12)
+	
+	
