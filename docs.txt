@@ -3,6 +3,11 @@ This program will link a PGSQL database to a C++ program
 -Full CRUD functionality 
 -For first iteration, only one table will be used 
 
+
+*************************************
+DESIGN IDEAS/HYPOTHETICALS
+*************************************
+
 +++ Commands +++
 read (r)	tablename	
 	-a show all records
@@ -27,4 +32,26 @@ update (u)
 delete (d) 
 	-deletes by id number (delete 12)
 	
+	
+
+the bobiverse
+project hailmary andy wier
+
+error checking:
+	input y created a infinite loop 
+	free trees (0 cost)
+	yes no caused no to be read
+	waiting for enter (showing chars, can they be hidden?)
+	delete non existence check 
+	report -> create "started new transaction while trans active"
+		cant create with expensive 9999 50 yes ??? 
+
+todo: update the digit validation to take strings instead of doubles 
+todo: clear screen after each input	
+	maybe: save all commands so that they can be exported (?)
+todo: numeric checks for sci notation (cost 99992)
+todo: whitespace iomanip ws checking for read flags 
+todo: if user enters nothing, don't loop again in command loop
+todo: report functionality ask for file output
+
 	

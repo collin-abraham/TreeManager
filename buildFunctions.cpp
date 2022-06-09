@@ -1,68 +1,91 @@
+/*
+buildFunctions.cpp
+2022-06-09
+Collin Abraham
+
+-Contains function declarations from definitions in buildFunctions.h.
+-these functions construct SQL statements and output the results to the user 
+
+*/
+
 #include "buildFunctions.h"
 
-
+/* func used to connect to the database 
+obviously in a production environment you wouldn't want the username and password in open text like this
+but for learning/practice uses it was left like this. Modify to connect to your own postgres db */
 const std::string connString() {
 	return "host=localhost port=5432 dbname=TreeManagement user=postgres password=password";
 }
 
 
-// helper function to print hypens to the screen, used with the print func
+/* helper func to print hypens to the screen, used with printResults() */
 void printHyphens(const int& width) {
 	// print a row of hypens 
+	std::cout << "\n";
 	for (int i = 0; i < width; ++i)
 		std::cout << "-";
-	std::cout << "\n";
 }
 
+/* Constructs a select statement to retrieve all rows orderd by the primary key id */
 pqxx::result buildRead(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY tree_id");
 }
-
+/* Constructs a select statement to retrieve a single row based on id given */
 pqxx::result buildReadId(pqxx::connection& connObj, const std::string& id) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees WHERE tree_id = " + id);
 }
 
+/* Constructs a select statement to retrieve all rows ordred by name in ascending order */
 pqxx::result buildReadName(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY tree_name ASC");
 }
 
+/* Constructs a select statement to retrieve all rows ordred by name in descending order */
 pqxx::result buildReadNameReversed(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY tree_name DESC");
 }
 
+/* Constructs a select statement to retrieve all rows ordred by their cost in ascending order */
 pqxx::result buildReadCost(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY tree_cost ASC");
 }
 
+/* Constructs a select statement to retrieve all rows ordred by their cost in descending order */
 pqxx::result buildReadCostReversed(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY tree_cost DESC ");
 }
 
+/* Constructs a select statement to retrieve all rows ordred by their quantity in ascending order */
 pqxx::result buildReadQuantity(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY quantity ASC");
 }
 
+/* Constructs a select statement to retrieve all rows ordred by their quantity in descending order */
 pqxx::result buildReadQuantityReversed(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 	return workerN.exec("SELECT * FROM trees ORDER BY quantity DESC");
 }
 
+/* Constructs an insert statement to write a new record into the db */
 void buildCreate(pqxx::connection& connObj, const std::tuple<std::string, int, double, bool>& insertDetails) {
 	
 	// query and store the most recent ID added so that this insert statement can auto increment 
 	pqxx::nontransaction workerN(connObj);
 	pqxx::result highestIdQuery = (workerN.exec("SELECT MAX(tree_id) FROM trees")); 
-	int newId = std::stoi(highestIdQuery[0][0].c_str()) + 1; // conv the str to an int and increment by 1 for new ID
+	const int newId = std::stoi(highestIdQuery[0][0].c_str()) + 1; // conv the str to an int and increment by 1 for new ID
+	connObj.close();
 
+	
 	// build transactional worker
-	pqxx::work worker(connObj);
+	pqxx::connection tempConnObj(connString());
+	pqxx::work worker(tempConnObj);
 
 	// build the insert statement with a stringstream and the tuple argument 
 	std::stringstream ss; 
@@ -85,7 +108,7 @@ void buildCreate(pqxx::connection& connObj, const std::tuple<std::string, int, d
 	
 }
 
-
+/* Constructs an update statement to change a record in the database based on user inputs */
 void buildUpdate(pqxx::connection& connObj, const std::tuple<int, std::string, int, double, bool>& insertDetails) {
 
 	pqxx::work worker(connObj);
@@ -110,7 +133,7 @@ void buildUpdate(pqxx::connection& connObj, const std::tuple<int, std::string, i
 	std::cout << std::endl << "*** New Record successfully updated to Database! ***" << std::endl;
 }
 
-
+/* Cosntructs a delete statement to remove records based on primary key id given by user */
 void buildDelete(pqxx::connection& connObj, const std::string& id) {
 
 	pqxx::work worker(connObj);
@@ -125,7 +148,7 @@ void buildDelete(pqxx::connection& connObj, const std::string& id) {
 	std::cout << std::endl << "*** Record successfully deleted from Database! ***" << std::endl;
 }
 
-
+/* Sends several queries to the database to answer a few hypothetically created business questions */
 void buildReport(pqxx::connection& connObj) {
 	pqxx::nontransaction workerN(connObj);
 
@@ -134,17 +157,17 @@ void buildReport(pqxx::connection& connObj) {
 	pqxx::result response;
 
 	// Average cost 
-	response = workerN.exec("SELECT AVG(tree_cost) FROM trees");
-	std::cout << "\nAverage cost: " << std::setprecision(4) << response[0][0].as<float>() << std::endl;
+	response = workerN.exec("SELECT round(AVG(tree_cost)::numeric, 2) FROM trees");
+	std::cout << "\nAverage cost: " << response[0][0].as<std::string>() << std::endl;
 	response.clear();
 
 	// Total quantity of inventory
-	response = workerN.exec("SELECT COUNT(quantity) FROM trees");
+	response = workerN.exec("SELECT SUM(quantity) FROM trees");
 	std::cout << "\nTotal quantity of inventory: " << response[0][0].as<std::string>() << std::endl;
 	response.clear();
 
 	// Total value of inventory
-	response = workerN.exec("SELECT SUM(tree_cost) FROM trees");
+	response = workerN.exec("SELECT SUM(tree_cost*quantity) FROM trees");
 	std::cout << "\nTotal value of inventory: " << response[0][0].as<std::string>() << std::endl;
 	response.clear();
 
@@ -166,13 +189,16 @@ void buildReport(pqxx::connection& connObj) {
 	response.clear();
 
 	std::cout << "\nPercentage of trees that require machines: "
-		<< std::setprecision(4) << (machineYes / machineNo) * 100
+		<< std::setprecision(4) << (machineYes / (machineYes + machineNo)) * 100
 		<< "%"
 		<< std::endl;
 
 	std::cout << "\nPress Enter to continue..." << std::endl;
+
 }
 
+/* Sends several queries to the database to answer a few hypothetically created business questions 
+and outputs the results to a given filename.txt */
 void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::string& userInput) {
 	pqxx::nontransaction workerN(connObj);
 
@@ -185,8 +211,8 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	response.clear();
 
 	// Average cost 
-	response = workerN.exec("SELECT AVG(tree_cost) FROM trees");
-	fileOut << "\nAverage cost: " << std::setprecision(4) << response[0][0].as<float>() << std::endl;
+	response = workerN.exec("SELECT round(AVG(tree_cost)::numeric, 2) FROM trees");
+	fileOut << "\nAverage cost: " << std::setprecision(4) << response[0][0].as<std::string>() << std::endl;
 	response.clear();
 
 	// Total quantity of inventory
@@ -195,7 +221,7 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	response.clear();
 
 	// Total value of inventory
-	response = workerN.exec("SELECT SUM(tree_cost) FROM trees");
+	response = workerN.exec("SELECT SUM(tree_cost*quantity) FROM trees");
 	fileOut << "\nTotal value of inventory: " << response[0][0].as<std::string>() << std::endl;
 	response.clear();
 
@@ -217,7 +243,7 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	response.clear();
 
 	fileOut << "\nPercentage of trees that require machines: "
-		<< std::setprecision(4) << (machineYes / machineNo) * 100
+		<< std::setprecision(4) << (machineYes / (machineYes + machineNo)) * 100
 		<< "%"
 		<< std::endl;
 
@@ -237,10 +263,7 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	// if nothing was extracted from the file, delete it from the filesystem so that no folder turd is left 
 	if ((ss.str()).empty()) { 
 		try {
-			if (std::filesystem::remove(userInput))
-				std::cout << "file " << userInput << " deleted.\n";
-			else
-				std::cout << "file " << userInput << " not found.\n";
+			std::filesystem::remove(userInput);
 		}
 		catch (const std::filesystem::filesystem_error& err) {
 			std::cout << "filesystem error: " << err.what() << '\n';
@@ -251,6 +274,8 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 	std::cout << "\nPress enter to continue.\n";
 }
 
+/* Displays to the user the contents of a pqxx::result object created after executing 
+one of the query statement funcs within this file */
 void printResults(const pqxx::result& theResult) {
 	
 	const std::string seperator{ "  |  " }; // cleaner output
@@ -259,27 +284,28 @@ void printResults(const pqxx::result& theResult) {
 
 	// give a row of hyphens for readability
 	printHyphens(rowWidth);
+	std::cout << "\n";
 
 	// print a row of col names
-	std::cout << seperator << std::setw(colWidth) << "Tree ID"
-		<< seperator << std::setw(colWidth * 2) << "Name"
-		<< seperator << std::setw(colWidth) << "Price"
-		<< seperator << std::setw(colWidth) << "Quantity"
-		<< seperator << std::setw(colWidth) << "Machine" << seperator 
-		<< std::endl; 
+	std::cout << seperator << std::right << std::setw(colWidth) << "Tree ID"
+		<< seperator << std::right << std::setw(colWidth * 2) << "Name"
+		<< seperator << std::right << std::setw(colWidth) << "Price"
+		<< seperator << std::right << std::setw(colWidth) << "Quantity"
+		<< seperator << std::right << std::setw(colWidth) << "Machine" << seperator;
 
 	// give a row of hyphens for readability
 	printHyphens(rowWidth);
+	std::cout << "\n";
 
 	// print a vertical row 
 	for (size_t i = 0; i < theResult.size(); ++i) {
 
 		std::cout << seperator
-			<< std::setw(colWidth) << theResult[i][0].c_str() << seperator
-			<< std::setw(colWidth * 2) << theResult[i][1].c_str() << seperator
-			<< std::setw(colWidth) << theResult[i][2].c_str() << seperator
-			<< std::setw(colWidth) << theResult[i][3].c_str() << seperator
-			<< std::setw(colWidth) << (theResult[i][4].as<std::string>() == "f" ? "no" : "yes") << seperator
+			<< std::setw(colWidth) << std::right << theResult[i][0].c_str() << seperator
+			<< std::setw(colWidth * 2) << std::right << theResult[i][1].c_str() << seperator
+			<< std::setw(colWidth) << std::right << theResult[i][2].c_str() << seperator
+			<< std::setw(colWidth) << std::right << theResult[i][3].c_str() << seperator
+			<< std::setw(colWidth) << std::right << (theResult[i][4].as<std::string>() == "f" ? "no" : "yes") << seperator
 			<< std::endl;
 	}
 }

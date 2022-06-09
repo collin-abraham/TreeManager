@@ -1,9 +1,15 @@
+/*
+buildFunctions.h
+2022-06-09
+Collin Abraham
+
+- Function definitions used to construct + send SQL statements to db 
+
+*/
+
 #pragma once
-#include <pqxx/pqxx>
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <filesystem>
+
+#include "commandloop.h" // all necessary libraries found within commandloop.h
 
 pqxx::result buildRead(pqxx::connection& connObj);
 pqxx::result buildReadId(pqxx::connection& connObj, const std::string& id);

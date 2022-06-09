@@ -1,5 +1,12 @@
-//#include <iostream>
-//#include <pqxx/pqxx>
+/*
+main.cpp
+2022-06-09
+Collin Abraham
+
+-Main function to drive the main loop and catch any exceptions that may occur 
+
+*/
+
 #include "commandloop.h"
 
 using namespace std;
@@ -12,15 +19,11 @@ int main() {
 	cout << "++++++++++++++++++++++++++++++" << endl;
 
 	cout << "\nAttempting connection to database..." << endl;
+	cout << "Enter \"help\" for options" << endl;
 
 	try {
-		//connection connObj(connString()); // build a connection object to db
-		//work worker(connObj); // worker obj to interact with db connection 
-		cout << "Connection to database established..." << endl;
-		cout << "Enter \"help\" for options" << endl;
-
+		// launch the user command loop
 		commandLoop();
-		//worker.commit();
 	}
 	catch (std::exception& e) {
 		cerr << e.what() << endl;

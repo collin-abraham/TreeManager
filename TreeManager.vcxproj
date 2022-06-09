@@ -149,10 +149,12 @@
     <ClCompile Include="buildFunctions.cpp" />
     <ClCompile Include="commandloop.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="validationFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buildFunctions.h" />
     <ClInclude Include="commandloop.h" />
+    <ClInclude Include="validationFunctions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
