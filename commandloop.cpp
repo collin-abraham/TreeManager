@@ -400,7 +400,7 @@ int commandLoop() {
 		} // end report
 		
 		/*************************************
-		REPORT
+		HELP
 		*************************************/
 
 		else if (userInput == "help") {
