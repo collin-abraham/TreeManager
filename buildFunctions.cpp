@@ -19,7 +19,7 @@ const std::string connString() {
 
 
 /* helper func to print hypens to the screen, used with printResults() */
-void printHyphens(const int& width) {
+void printHyphens(int width) {
 	// print a row of hypens 
 	std::cout << "\n";
 	for (int i = 0; i < width; ++i)
@@ -265,8 +265,8 @@ void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::s
 		try {
 			std::filesystem::remove(userInput);
 		}
-		catch (const std::filesystem::filesystem_error& err) {
-			std::cout << "filesystem error: " << err.what() << '\n';
+		catch (const std::filesystem::filesystem_error& e) {
+			std::cout << "filesystem error: " << e.what() << '\n';
 		}
 	}	
 

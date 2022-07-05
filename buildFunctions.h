@@ -30,7 +30,7 @@ void buildReport(pqxx::connection& connObj);
 void buildReport(pqxx::connection& connObj, std::ofstream& fileOut, const std::string& userInput);
 
 void printResults(const pqxx::result& theResult);
-void printHyphens(const int& width); 
+void printHyphens(int width); 
 
 const std::string connString();
 

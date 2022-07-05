@@ -25,7 +25,7 @@ bool validDigits(const string& str) {
 }
 
 /* checks that the string contains only digits, breaks the loop if not */
-bool validDigitsCost(const double& cost) {
+bool validDigitsCost(double cost) {
 
 	string temp = to_string(cost); // conv to string to check contents 
 	for (const auto& c : temp) {
@@ -63,7 +63,7 @@ bool validEmpty(const string& str) {
 }
 
 /* length of the string must fall within the specific value */
-bool validNameLength(const string& str, const int& len) {
+bool validNameLength(const string& str, int len) {
 
 	if (str.length() > len) {
 		cerr << "ERROR: Input cannot be more than " << len << " characters\n";

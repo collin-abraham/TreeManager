@@ -44,8 +44,8 @@ int commandLoop() {
 		// user wants to read records 
 		if (userInput == "read") {	// no flags given 
 			printResults(buildRead(connObj));
-			cout << "\nPress enter to continue...";
-			cleanBuffer();
+			//cout << "\nPress enter to continue...";
+			//cleanBuffer();
 			continue;
 		}
 

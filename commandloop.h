@@ -24,4 +24,5 @@ Collin Abraham
 
 
 void cleanBuffer();
+
 int commandLoop();
