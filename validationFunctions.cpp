@@ -12,11 +12,11 @@ Collin Abraham
 using namespace std;
 
 /* checks that the string contains only digits, breaks the loop if not */
-bool validDigits(const string& str) {
+bool valid_digits(const string& str) {
 
 	for (const auto& c : str) {
 		if (!isdigit(c)) {	// see if we encounter something that isn't a digit
-			std::cerr << "ERROR: Input failed, must be digits only!\n" << endl;
+			std::cerr << "ERROR: Input failed, must be digits only!\n";
 			return false;
 		}
 	}
@@ -25,12 +25,13 @@ bool validDigits(const string& str) {
 }
 
 /* checks that the string contains only digits, breaks the loop if not */
-bool validDigitsCost(double cost) {
 
-	string temp = to_string(cost); // conv to string to check contents 
-	for (const auto& c : temp) {
+bool valid_digits_cost(const string& cost) {
+
+	//string temp = to_string(cost); // conv to string to check contents 
+	for (const auto& c : cost) {
 		if (!isdigit(c) && c != '.') {	// digits and decimal point allowed 
-			std::cerr << "ERROR: Input failed, must be digits only!\n" << endl;
+			std::cerr << "ERROR: Input failed, must be digits only!\n";
 			return false;
 		}
 	}
@@ -39,7 +40,7 @@ bool validDigitsCost(double cost) {
 }
 
 /* checks that the string contains only alphabetical and digit chars, breaks the loop if not*/
-bool validAlphaNum(const string& str) {
+bool valid_alpha_num(const string& str) {
 
 	for (const auto& c : str) {
 		if (!isalnum(c) && c != '\'' && c != '-' && c != ' ') {	// allow for apostrophies, hyphens and spaces
@@ -52,7 +53,7 @@ bool validAlphaNum(const string& str) {
 }
 
 /* string must not be empty */
-bool validEmpty(const string& str) {
+bool valid_empty(const string& str) {
 
 	if (str == "") {
 		cerr << "ERROR: Input cannot be empty!\n";
@@ -63,7 +64,7 @@ bool validEmpty(const string& str) {
 }
 
 /* length of the string must fall within the specific value */
-bool validNameLength(const string& str, int len) {
+bool valid_name_length(const string& str, int len) {
 
 	if (str.length() > len) {
 		cerr << "ERROR: Input cannot be more than " << len << " characters\n";
@@ -74,7 +75,7 @@ bool validNameLength(const string& str, int len) {
 }
 
 /* string must explicitly equal "yes" or "no" */
-bool validYesNo(const string& str) {
+bool valid_yes_no(const string& str) {
 	if (str != "yes" && str != "no") {
 		cerr << endl << "ERROR: Input must be 'yes' or 'no' cannot be: \"" << str << "\"!\n";
 		return false;

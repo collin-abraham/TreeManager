@@ -23,7 +23,7 @@ int main() {
 
 	try {
 		// launch the user command loop
-		commandLoop();
+		command_loop();
 	}
 	catch (std::exception& e) {
 		cerr << e.what() << endl;

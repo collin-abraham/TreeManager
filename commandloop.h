@@ -14,7 +14,7 @@ Collin Abraham
 #include <string>
 #include <tuple>
 #include <pqxx/pqxx>
-#include <algorithm> // transform ... to_lower
+#include <algorithm> 
 #include <iomanip>
 #include <limits>
 #include <fstream>
@@ -23,6 +23,6 @@ Collin Abraham
 #include "buildFunctions.h"
 
 
-void cleanBuffer();
+void clean_buffer();
 
-int commandLoop();
+int command_loop();
